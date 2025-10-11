@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CustomMVC.Test": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
