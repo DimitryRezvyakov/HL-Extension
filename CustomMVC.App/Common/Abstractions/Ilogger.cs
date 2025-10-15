@@ -8,6 +8,7 @@ namespace CustomMVC.App.Common.Abstractions
 {
     public interface Ilogger<T>
     {
+        Type type { get; }
         void LogInfo(string message);
         void LogWarning(string message);
         void LogError(Exception ex);

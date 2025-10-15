@@ -16,4 +16,10 @@
     <ProjectReference Include="..\CustomMVC.App\CustomMVC.App.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="wwwroot\Index.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

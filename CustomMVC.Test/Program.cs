@@ -1,6 +1,8 @@
 ﻿using CustomMVC.App;
+using CustomMVC.App.Core.Middleware.Extensions;
 using CustomMVC.App.Core.Routing.Extensions;
 using CustomMVC.App.Hosting.Application;
+using CustomMVC.App.Hosting.Application.Extensions;
 
 
 
@@ -11,7 +13,9 @@ builder.hostOptionsBuilder.Configure(cfg =>
 
 var app = builder.Build();
 
+app.UseStaticFiles();
 app.UseRouting();
+app.UseEndpoints();
 
 app.Use(async (context, next) =>
 {
@@ -31,13 +35,11 @@ app.Use(async (context, next) =>
     Console.WriteLine("After 2");
 });
 
-app.Map(async context =>
+app.MapGet("/Home", async context =>
 {
     context.Response.SetStatusCode(200);
     await context.Response.WriteAsync("Hello");
     Console.WriteLine("Map method");
-},
-"/Index"
-);
+});
 
 app.Run();

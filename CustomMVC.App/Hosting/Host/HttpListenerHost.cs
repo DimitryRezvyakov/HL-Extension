@@ -1,4 +1,5 @@
-﻿using CustomMVC.App.Common.Abstractions;
+﻿using CustomMVC.App.Common;
+using CustomMVC.App.Common.Abstractions;
 using CustomMVC.App.Core.Http;
 using CustomMVC.App.Core.Middleware;
 using CustomMVC.App.Hosting.Abstractions;
@@ -17,7 +18,7 @@ namespace CustomMVC.App.Hosting.Host
         private readonly HostOptions _options;
         public RequestDelegate RequestDelegate { get; set; } = null!;
         public bool isListening => _listener.IsListening;
-        private readonly Ilogger<HttpListenerHost> _logger;
+        private readonly Logger<HttpListenerHost> _logger = new();
 
         public HttpListenerHost(HostOptions options) 
         {

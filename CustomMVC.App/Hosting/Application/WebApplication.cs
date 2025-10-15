@@ -2,6 +2,7 @@
 using CustomMVC.App.Core.Http;
 using CustomMVC.App.Core.Middleware;
 using CustomMVC.App.Core.Routing;
+using CustomMVC.App.Core.Routing.Common;
 using CustomMVC.App.DependencyInjection;
 using CustomMVC.App.Hosting.Abstractions;
 using System;
@@ -17,7 +18,7 @@ namespace CustomMVC.App.Hosting.Application
         //private static readonly IConfiguration _config = GetConfiguration();
 
         public readonly WebApplicationBuilder WebAppBuilder;
-        public readonly WebApplicationPipelineBuilder PipeLineBuilder = new();
+        public readonly List<EndpointDataSource> endpointDataSources = new List<EndpointDataSource>();
 
         private readonly IHost _host;
         private RequestDelegate? _requestDelegate;
@@ -33,24 +34,11 @@ namespace CustomMVC.App.Hosting.Application
             _host = host;
         }
 
-        public void Use(Func<HttpContext, Func<Task>, Task> middleware)
-        {
-            PipeLineBuilder.Use(middleware);
-        }
-
-        public void Run(Func<HttpContext, Task> terminalMiddleware)
-        {
-            PipeLineBuilder.Run(terminalMiddleware);
-        }
-
-        public void Map(Func<HttpContext, Task> handler, string pattern, string method = "GET")
-        {
-            PipeLineBuilder.Map(pattern, method, handler);
-        }
-
         public void Run()
         {
-            _requestDelegate = PipeLineBuilder.Build();
+            ArgumentNullException.ThrowIfNull(WebAppBuilder);
+
+            _requestDelegate = WebAppBuilder.pipelineBuilder.Build();
 
             if (_requestDelegate == null)
                 throw new ArgumentNullException("Request Delegate is null");

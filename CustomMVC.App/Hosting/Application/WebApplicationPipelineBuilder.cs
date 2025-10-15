@@ -13,9 +13,14 @@ namespace CustomMVC.App.Hosting.Application
     public class WebApplicationPipelineBuilder
     {
         private readonly List<Func<RequestDelegate, RequestDelegate>> _middlewares = new();
-        private readonly EndpointRouter _router = new();
 
-        public bool UseRouting { get; set; } = false;
+        public RequestDelegate EndpointHandler { get; set; } = async (context) =>
+        {
+            context.Response.SetStatusCode(200);
+
+            await Task.CompletedTask;
+        };
+
         public bool UseControllers = false;
 
 
@@ -36,13 +41,6 @@ namespace CustomMVC.App.Hosting.Application
             return this;
         }
 
-        public WebApplicationPipelineBuilder Map(string pattern, string method, Func<HttpContext, Task> handler)
-        {
-            _router.Map(pattern, method, handler);
-
-            return this;
-        }
-
         public RequestDelegate Build()
         {
             if (_middlewares.Count == 0)
@@ -52,23 +50,7 @@ namespace CustomMVC.App.Hosting.Application
                     return Task.CompletedTask;
                 };
 
-            RequestDelegate component;
-            if (UseRouting)
-            {
-                component = async ctx =>
-                {
-                    await _router.RouteAsync(ctx);
-                };
-            }
-            else
-            {
-                component = ctx =>
-                {
-                    ctx.Response.SetStatusCode(404);
-                    return Task.CompletedTask;
-                };
-            }
-
+            RequestDelegate component = EndpointHandler;
 
             for (int i = _middlewares.Count - 1; i >= 0; i--)
             {

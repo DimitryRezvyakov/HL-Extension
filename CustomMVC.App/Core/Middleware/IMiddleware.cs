@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace CustomMVC.App.Core.Middleware
 {
+    /// <summary>
+    /// Represents a default middleware methods
+    /// </summary>
     public interface IMiddleware
     {
         public Task InvokeAsync(HttpContext context, RequestDelegate next);

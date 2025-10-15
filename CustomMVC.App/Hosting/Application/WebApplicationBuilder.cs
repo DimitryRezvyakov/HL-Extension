@@ -1,4 +1,5 @@
-﻿using CustomMVC.App.DependencyInjection;
+﻿using CustomMVC.App.Core.Routing;
+using CustomMVC.App.DependencyInjection;
 using CustomMVC.App.Hosting.Abstractions;
 using CustomMVC.App.Hosting.Host;
 using System;
@@ -12,11 +13,16 @@ namespace CustomMVC.App.Hosting.Application
     public class WebApplicationBuilder
     {
         public readonly HostBuilder hostOptionsBuilder = new();
-
+        public readonly WebApplicationPipelineBuilder pipelineBuilder = new();
+        public readonly DefaultEndpointDataSource defaultEndpointDataSource = DefaultEndpointDataSource.Instance;
 
         public WebApplication Build()
         {
-            return new WebApplication(hostOptionsBuilder.Build(), this);
+            var app = new WebApplication(hostOptionsBuilder.Build(), this);
+
+            app.endpointDataSources.Add(defaultEndpointDataSource);
+
+            return app;
         }
     }
 }

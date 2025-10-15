@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CustomMVC.App.MVC.Controllers.Resolve
+namespace CustomMVC.App.Core.Routing.Common
 {
-    public class MapControllerRouteResolver
+    public abstract class Endpoint
     {
+
     }
 }
