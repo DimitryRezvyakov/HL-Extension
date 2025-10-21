@@ -15,14 +15,30 @@ namespace CustomMVC.App.Hosting.Application
 {
     public class WebApplication
     {
-        //private static readonly IConfiguration _config = GetConfiguration();
-
+        /// <summary>
+        /// Builder for a WebApplication
+        /// </summary>
         public readonly WebApplicationBuilder WebAppBuilder;
+
+        /// <summary>
+        /// WebApplication EndpointDataSource
+        /// </summary>
         public readonly List<EndpointDataSource> endpointDataSources = new List<EndpointDataSource>();
 
+        /// <summary>
+        /// Host for WebApplication
+        /// </summary>
         private readonly IHost _host;
+
+        /// <summary>
+        /// Handler for request
+        /// </summary>
         private RequestDelegate? _requestDelegate;
 
+        /// <summary>
+        /// Creates a WebApplicationBuilder
+        /// </summary>
+        /// <returns>WebApplicationBuilder</returns>
         public static WebApplicationBuilder CreateBuilder()
         {
             return new WebApplicationBuilder();
@@ -34,11 +50,15 @@ namespace CustomMVC.App.Hosting.Application
             _host = host;
         }
 
+        /// <summary>
+        /// Running the application
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
         public void Run()
         {
             ArgumentNullException.ThrowIfNull(WebAppBuilder);
 
-            _requestDelegate = WebAppBuilder.pipelineBuilder.Build();
+            _requestDelegate = WebAppBuilder.PipeLine.Build();
 
             if (_requestDelegate == null)
                 throw new ArgumentNullException("Request Delegate is null");

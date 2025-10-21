@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace CustomMVC.App.Hosting.Abstractions
 {
+    /// <summary>
+    /// Default host builder interface
+    /// </summary>
     public interface IHostBuilder
     {
         public HttpListenerHost Build();

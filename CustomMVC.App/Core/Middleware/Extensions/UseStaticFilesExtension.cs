@@ -23,7 +23,7 @@ namespace CustomMVC.App.Core.Middleware.Extensions
         {
             if (opt != null) opt(_options);
 
-            app.WebAppBuilder.pipelineBuilder.Use(async (context, next) =>
+            app.WebAppBuilder.PipeLine.Use(async (context, next) =>
             {
                 byte[]? file;
 
@@ -37,13 +37,6 @@ namespace CustomMVC.App.Core.Middleware.Extensions
 
                     try
                     {
-                        //file = File.ReadAllBytes(absolutePath);
-
-                        //context.Response.SetStatusCode(200);
-                        //context.Response.SetContentType(Path.GetExtension(fileName).GetContentTypeByFileExtension());
-
-                        //await context.Response.WriteBytesAsync(file);
-
                         var files = Directory.GetFiles(_options.Root, fileName, SearchOption.AllDirectories);
 
                         if (files != null && files.Length > 0)
@@ -56,20 +49,6 @@ namespace CustomMVC.App.Core.Middleware.Extensions
                             await context.Response.WriteBytesAsync(file);
                         }
                     }
-                    //catch (DirectoryNotFoundException)
-                    //{
-                    //    var files = Directory.GetFiles(_options.Root, fileName, SearchOption.AllDirectories);
-
-                    //    if (files != null && files.Length > 0)
-                    //    {
-                    //        file = File.ReadAllBytes(files.First());
-
-                    //        context.Response.SetStatusCode(200);
-                    //        context.Response.SetContentType(Path.GetExtension(fileName).GetContentTypeByFileExtension());
-
-                    //        await context.Response.WriteBytesAsync(file);
-                    //    }
-                    //}
                     catch (Exception)
                     {
                         context.Response.SetStatusCode(404);
@@ -79,7 +58,6 @@ namespace CustomMVC.App.Core.Middleware.Extensions
                 {
                     await next();
                 }
-
             });
         }
     }

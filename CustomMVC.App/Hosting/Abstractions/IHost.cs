@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace CustomMVC.App.Hosting.Abstractions
 {
+
+    /// <summary>
+    /// Default host interface
+    /// </summary>
     public interface IHost
     {
         public bool isListening { get; }

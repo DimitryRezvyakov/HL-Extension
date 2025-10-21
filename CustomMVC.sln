@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomMVC.App", "CustomMVC.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomMVC.Test", "CustomMVC.Test\CustomMVC.Test.csproj", "{C9EBE67F-5266-4E06-BB5C-36D24C4A1657}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Execute", "Execute\Execute.csproj", "{3903C11A-489D-4B4D-932D-784F89784502}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C9EBE67F-5266-4E06-BB5C-36D24C4A1657}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9EBE67F-5266-4E06-BB5C-36D24C4A1657}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9EBE67F-5266-4E06-BB5C-36D24C4A1657}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3903C11A-489D-4B4D-932D-784F89784502}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3903C11A-489D-4B4D-932D-784F89784502}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3903C11A-489D-4B4D-932D-784F89784502}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3903C11A-489D-4B4D-932D-784F89784502}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace CustomMVC.App.Core.Routing.Common
 {
+    /// <summary>
+    /// Default enpoint data source
+    /// </summary>
     public abstract class EndpointDataSource
     {
         public abstract List<RouteEndpoint> Endpoints { get; }

@@ -1,5 +1,6 @@
 ﻿using CustomMVC.App.Common;
 using CustomMVC.App.Common.Exceptions;
+using CustomMVC.App.Core.Abstractions;
 using CustomMVC.App.Hosting.Application;
 using CustomMVC.App.Hosting.Application.Extensions;
 using System;
@@ -12,15 +13,26 @@ namespace CustomMVC.App.Core.Routing.Extensions
 {
     public static class RouteExtensions
     {
-        private readonly static Logger<WebApplication> _logger = new(); 
-        public static void UseRouting(this WebApplication app)
+        private readonly static Logger<WebApplication> _logger = new();
+        private readonly static UseRoutingOptions _useRoutingOptions = new();
+        public static void UseRouting(this WebApplication app, Action<UseRoutingOptions>? opt = null)
         {
+            if (opt != null)
+            {
+                opt(_useRoutingOptions);
+            }
+
             app.Use(async (context, next) =>
             {
                 _logger.LogInfo($"Mathing {context.Request.Uri?.AbsolutePath ?? "/"}, {_logger.type}");
 
-                var matcher = new RouteMatcher(app.endpointDataSources);
+                //Creating a matcher instance
+                var matcher = Activator.CreateInstance(_useRoutingOptions.Matcher, new object[] { app.endpointDataSources }) as Matcher;
 
+                //This exception can be handled by using DefaultExceptionHandler middleware
+                ArgumentNullException.ThrowIfNull(matcher);
+
+                //Trying to set endpoint
                 try
                 {
                     RouteEndpoint route = await matcher.MatchAsync(context);
@@ -31,10 +43,14 @@ namespace CustomMVC.App.Core.Routing.Extensions
 
                     await next();
                 }
-                catch (RouteNotFindException)
+
+                //If endpoint was not found return 404 status code
+                catch (RouteNotFoundException)
                 {
                     context.Response.SetStatusCode(404);
                 }
+
+                //If other exception was occured return 500 status code, development only
                 catch (Exception ex)
                 {
                     _logger.LogFatal($"Matching exception", ex);
@@ -46,7 +62,7 @@ namespace CustomMVC.App.Core.Routing.Extensions
 
         public static void UseEndpoints(this WebApplication app)
         {
-            app.WebAppBuilder.pipelineBuilder.EndpointHandler = async (context) =>
+            app.WebAppBuilder.PipeLine.EndpointHandler = async (context) =>
             {
                 RouteEndpoint routeEnpoint = context.Endpoint;
 
@@ -56,6 +72,28 @@ namespace CustomMVC.App.Core.Routing.Extensions
 
                 await routeHandler(context);
             };
+        }
+    }
+
+    public class UseRoutingOptions()
+    {
+        /// <summary>
+        /// Must inherit a Matcher abstract class
+        /// </summary>
+        private Type MatcherType { get; set; } = typeof(RouteMatcher);
+
+        /// <summary>
+        /// Gives access to a MatcherType
+        /// </summary>
+        public Type Matcher => MatcherType;
+
+        /// <summary>
+        /// Configure a custom matcher
+        /// </summary>
+        /// <typeparam name="T">Custom matcher type, must be inherit a Matcher abstract class</typeparam>
+        public void SetMatcher<T>() where T : Matcher
+        {
+            MatcherType = typeof(T);
         }
     }
 }

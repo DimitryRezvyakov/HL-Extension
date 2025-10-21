@@ -11,7 +11,7 @@ namespace CustomMVC.App.Core.Routing
     {
         private static DefaultEndpointDataSource? _instance;
         private static object lockObj = new object();
-
+        private List<RouteEndpoint>? _endpoints;
         public List<RouteEndpointBuilder> _endpointBuilders = new();
         public static DefaultEndpointDataSource Instance
         {
@@ -30,7 +30,6 @@ namespace CustomMVC.App.Core.Routing
             _endpointBuilders.Add(builder);
         }
 
-        public override List<RouteEndpoint> Endpoints => _endpointBuilders
-            .Select(b => b.Build()).ToList();
+        public override List<RouteEndpoint> Endpoints => _endpoints ??= _endpointBuilders.Select(b => b.Build()).ToList();
     }
 }

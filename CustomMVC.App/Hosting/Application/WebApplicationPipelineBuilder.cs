@@ -12,8 +12,14 @@ namespace CustomMVC.App.Hosting.Application
 {
     public class WebApplicationPipelineBuilder
     {
+        /// <summary>
+        /// Application middlewares lists
+        /// </summary>
         private readonly List<Func<RequestDelegate, RequestDelegate>> _middlewares = new();
 
+        /// <summary>
+        /// An endpoint router, if using endpoint just getting a HttpContext Endpoint and executing
+        /// </summary>
         public RequestDelegate EndpointHandler { get; set; } = async (context) =>
         {
             context.Response.SetStatusCode(200);
@@ -21,9 +27,11 @@ namespace CustomMVC.App.Hosting.Application
             await Task.CompletedTask;
         };
 
-        public bool UseControllers = false;
-
-
+        /// <summary>
+        /// Adds new Use middleware to pipeline
+        /// </summary>
+        /// <param name="middleware">Middleware</param>
+        /// <returns>WebApplicationPipeLineBuilder</returns>
         public WebApplicationPipelineBuilder Use(Func<HttpContext, Func<Task>, Task> middleware)
         {
             _middlewares.Add(next => async ctx =>
@@ -34,6 +42,11 @@ namespace CustomMVC.App.Hosting.Application
             return this;
         }
 
+        /// <summary>
+        /// Adds new Run middleware to pipline
+        /// </summary>
+        /// <param name="terminalMidleware">Middleware</param>
+        /// <returns>WebApplicationPipeLineBuilder</returns>
         public WebApplicationPipelineBuilder Run(Func<HttpContext, Task> terminalMidleware)
         {
             _middlewares.Add(next => async ctx => await terminalMidleware(ctx));
@@ -41,8 +54,13 @@ namespace CustomMVC.App.Hosting.Application
             return this;
         }
 
+        /// <summary>
+        /// Builds a web application pipeline
+        /// </summary>
+        /// <returns></returns>
         public RequestDelegate Build()
         {
+            //if no one middlewares returning 404 status code
             if (_middlewares.Count == 0)
                 return ctx =>
                 {

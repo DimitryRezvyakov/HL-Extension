@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace CustomMVC.App.Common.Exceptions
 {
-    public class RouteNotFindException : Exception
+    public class RequireMetadataException : Exception
     {
-        public RouteNotFindException() { }
+        public RequireMetadataException() { }
     }
 }

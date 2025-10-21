@@ -28,6 +28,11 @@ namespace CustomMVC.App.Core.Http
             _inner = inner;
         }
 
+        public HttpResponse()
+        {
+
+        }
+
         public async Task WriteAsync(string text)
         {
             if (!_hasStarted)

@@ -23,11 +23,20 @@ namespace CustomMVC.App.Core.Routing
             _order = order;
         }
 
+        /// <summary>
+        /// Builds the route
+        /// </summary>
+        /// <returns>RouteEndpoint</returns>
         public override RouteEndpoint Build()
         {
             return new RouteEndpoint(_pattern, _handler, _order, CreateRouteMetadata(Metadata));
         }
 
+        /// <summary>
+        /// Creating a metadata for route
+        /// </summary>
+        /// <param name="metadata">Metadata</param>
+        /// <returns>RouteEndpointMetadata</returns>
         private RouteEndpointMetadata CreateRouteMetadata(List<object> metadata)
         {
             return new RouteEndpointMetadata(metadata);

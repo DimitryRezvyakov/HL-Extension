@@ -9,7 +9,7 @@ namespace CustomMVC.App.Core.Http
 {
     public class HttpContext
     {
-        public HttpRequest Request { get; }
+        public virtual HttpRequest Request { get; set; }
         public HttpResponse Response { get; }
         public RouteEndpoint Endpoint { get; set; }
         public IServiceProvider RequestServices { get; set; }
@@ -20,6 +20,11 @@ namespace CustomMVC.App.Core.Http
         {
             Request = request;
             Response = response;
+        }
+
+        public HttpContext()
+        {
+
         }
     }
 }

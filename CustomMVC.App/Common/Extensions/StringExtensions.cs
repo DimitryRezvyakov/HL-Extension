@@ -36,5 +36,10 @@ namespace CustomMVC.App.Common.Extensions
                     return "application/octet-stream";
             }
         }
+
+        public static string RawControllerName(this string name)
+        {
+            return name.Replace("Controller", "").ToLower();
+        }
     }
 }

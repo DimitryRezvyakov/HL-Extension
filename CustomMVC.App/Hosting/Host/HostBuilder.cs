@@ -9,12 +9,20 @@ namespace CustomMVC.App.Hosting.Host
 {
     public class HostBuilder : IHostBuilder
     {
+        /// <summary>
+        /// Host options
+        /// </summary>
         private readonly HostOptions _options = new();
         public HttpListenerHost Build()
         {
             return new HttpListenerHost(_options);
         }
 
+        /// <summary>
+        /// Configure the host options
+        /// </summary>
+        /// <param name="opt">Configure action</param>
+        /// <returns>IHostBuilder</returns>
         public IHostBuilder Configure(Action<HostOptions>? opt)
         {
             opt?.Invoke(_options);

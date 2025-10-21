@@ -15,11 +15,34 @@ namespace CustomMVC.App.Hosting.Host
 
     public class HostOptions
     {
+        /// <summary>
+        /// Host domain
+        /// </summary>
         public string Domain { get; set; } = "localhost";
+
+        /// <summary>
+        /// Host port
+        /// </summary>
         public string Port { get; set; } = "8888";
+
+        /// <summary>
+        /// Host connection string
+        /// </summary>
         public string ConnectionString { get; set; } = "http://localhost:8888/";
+
+        /// <summary>
+        /// Host name
+        /// </summary>
         public string HostName { get; set; } = Assembly.GetCallingAssembly().ToString();
+
+        /// <summary>
+        /// Application name
+        /// </summary>
         public string ApplicationName { get; set; } = "MyApp";
+
+        /// <summary>
+        /// Application environment
+        /// </summary>
         public Environment ApplicationEnvironment { get; set; } = Environment.Development;
     }
 }

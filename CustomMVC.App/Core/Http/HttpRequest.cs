@@ -12,17 +12,23 @@ namespace CustomMVC.App.Core.Http
     public class HttpRequest
     {
         private readonly HttpListenerRequest _inner;
-        public Uri? Uri => _inner.Url;
+        public virtual Uri? Uri => _inner.Url;
+        public string? ContentType => _inner.ContentType;
+        public long ContentLength => _inner.ContentLength64;
         public Uri? UriReferer => _inner.UrlReferrer;
         public string Method => _inner.HttpMethod;
         public Stream Body => _inner.InputStream;
         public NameValueCollection Headers => _inner.Headers;
-        public NameValueCollection Query => _inner.QueryString;
+        public NameValueCollection QueryString => _inner.QueryString;
         public string[]? Language => _inner.UserLanguages;
-
         public HttpRequest(HttpListenerRequest inner)
         {
             _inner = inner;
+        }
+
+        public HttpRequest()
+        {
+
         }
     }
 }

@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace CustomMVC.App.MVC.Controllers.Abstractions
 {
-    public interface IControllerRouteReslover
+    /// <summary>
+    /// Metadata interface
+    /// </summary>
+    public interface IModelBindType
     {
-        public Task ResolveAsync();
-        public void Resolve();
     }
 }
