@@ -30,5 +30,10 @@ namespace CustomMVC.App.Common
         {
             Console.WriteLine($"Warning: {message} in {type}");
         }
+
+        public void LogDebug(string message)
+        {
+
+        }
     }
 }

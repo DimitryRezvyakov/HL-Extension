@@ -1,4 +1,5 @@
 ﻿using CustomMVC.App.Core.Http;
+using CustomMVC.App.DependencyInjection;
 using CustomMVC.App.MVC.Controllers.Abstractions;
 using CustomMVC.App.MVC.Controllers.Common.Entities;
 using CustomMVC.App.MVC.Controllers.Common.ModelBinding.Attributes;
@@ -11,9 +12,21 @@ using System.Threading.Tasks;
 
 namespace CustomMVC.App.MVC.Controllers.Common.ModelBinding
 {
-    public class DefaultModelBinder : ModelBinder
+    public class DefaultModelBinder : IModelBinder
     {
-        public override ModelState Bind(HttpContext context, ActionDescriptor descriptor)
+        private static readonly ServiceCollection _services = ServiceCollection.Instance;
+
+        /// <summary>
+        /// Model binder factory to creating a ModelBinderConcrete instances
+        /// </summary>
+        private readonly IModelBinderFactory _factory = _services.GetService<IModelBinderFactory>();
+
+        /// <summary>
+        /// For DI and testing purpose only
+        /// </summary>
+        public DefaultModelBinder() { }
+
+        public ModelState Bind(HttpContext context, ActionDescriptor descriptor)
         {
 
             var modelState = new ModelState()
@@ -31,7 +44,7 @@ namespace CustomMVC.App.MVC.Controllers.Common.ModelBinding
 
             foreach (var p in descriptor.Parameters)
             {
-                var binder = ModelBinderFactory.Create(p?.BindingInfo?.ModelBinder ?? (new FromBody()).ModelBinderType);
+                var binder = _factory.Create(p?.BindingInfo?.ModelBinder ?? (new FromBody()).ModelBinderType);
 
                 try
                 {
@@ -57,14 +70,14 @@ namespace CustomMVC.App.MVC.Controllers.Common.ModelBinding
             return modelState;
         }
 
-        public override bool CanBind(HttpContext context, ActionDescriptor descriptor)
+        public bool CanBind(HttpContext context, ActionDescriptor descriptor)
         {
             if (!descriptor.Parameters.Any())
                 return true;
 
             foreach (var p in descriptor.Parameters)
             {
-                var binder = ModelBinderFactory.Create(p?.BindingInfo?.ModelBinder ?? (new FromBody()).ModelBinderType);
+                var binder = _factory.Create(p?.BindingInfo?.ModelBinder ?? (new FromBody()).ModelBinderType);
 
                 if (!binder.CanBind(context, p))
                     return false;

@@ -1,4 +1,5 @@
 ﻿using CustomMVC.App.Common.Extensions;
+using CustomMVC.App.MVC.Controllers.Abstractions;
 using CustomMVC.App.MVC.Controllers.Common.Entities;
 using System;
 using System.Collections.Concurrent;
@@ -10,22 +11,13 @@ using System.Threading.Tasks;
 
 namespace CustomMVC.App.MVC.Controllers.Common
 {
-    public class ControllersProvider
+    public class ControllersProvider : IControllersProvider
     {
-        private static ControllersProvider? _instance;
-        private static object lockObj = new object();
-        private readonly ConcurrentDictionary<string, Type> _controllers = new();
-        public static ControllersProvider Instance
-        {
-            get
-            {
-                lock(lockObj)
-                {
-                    if (_instance == null) _instance = new ControllersProvider();
-                    return _instance;
-                }
-            }
-        }
+        private ConcurrentDictionary<string, Type> _controllers { get; } = new();
+
+        /// <summary>
+        /// For DI and testing purpose only
+        /// </summary>
 
         public Type GetController(string name)
         {
@@ -42,7 +34,7 @@ namespace CustomMVC.App.MVC.Controllers.Common
             return _controllers.Values.ToArray();
         }
 
-        private ControllersProvider()
+        public ControllersProvider()
         {
             var assembly = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
 

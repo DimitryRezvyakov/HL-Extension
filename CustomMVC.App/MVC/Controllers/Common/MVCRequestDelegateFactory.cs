@@ -1,5 +1,7 @@
 ﻿using CustomMVC.App.Core.Http;
 using CustomMVC.App.Core.Middleware;
+using CustomMVC.App.DependencyInjection;
+using CustomMVC.App.MVC.Controllers.Abstractions;
 using CustomMVC.App.MVC.Controllers.Routing;
 using System;
 using System.Collections.Generic;
@@ -14,8 +16,11 @@ namespace CustomMVC.App.MVC.Controllers.Common
     /// </summary>
     public class MVCRequestDelegateFactory
     {
-        private static readonly ActionSelector _actionSelector = new();
-        private static readonly ActionInvokerFactory _actionInvokerFactory = new();
+        private static readonly ServiceCollection _services = ServiceCollection.Instance;
+
+        private static readonly IActionSelector _actionSelector = _services.GetService<IActionSelector>();
+
+        private static readonly IActionInvokerFactory _actionInvokerFactory = _services.GetService<IActionInvokerFactory>();
 
         /// <summary>
         /// Creating a action invoker for this endpoint

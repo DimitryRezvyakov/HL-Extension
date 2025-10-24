@@ -12,11 +12,9 @@ namespace CustomMVC.App.MVC.Controllers.Abstractions
     /// <summary>
     /// Abstract class for model binders
     /// </summary>
-    public abstract class ModelBinder
+    public interface IModelBinder
     {
-        public abstract ModelState Bind(HttpContext context, ActionDescriptor descriptor);
-
-        public abstract bool CanBind(HttpContext context, ActionDescriptor descriptor);
-
+        public ModelState Bind(HttpContext context, ActionDescriptor descriptor);
+        public bool CanBind(HttpContext context, ActionDescriptor descriptor);
     }
 }

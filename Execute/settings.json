@@ -1,0 +1,7 @@
+﻿{
+  "Host": {
+    "Port": "8888",
+    "Domain": "localhost",
+    "Protocol":  "http"
+  }
+}

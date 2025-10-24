@@ -13,6 +13,16 @@ namespace CustomMVC.App.Hosting.Host
         /// Host options
         /// </summary>
         private readonly HostOptions _options = new();
+
+        /// <summary>
+        /// For DI and testing purpose only
+        /// </summary>
+        public HostBuilder() { }
+
+        /// <summary>
+        /// Builds new http host
+        /// </summary>
+        /// <returns></returns>
         public HttpListenerHost Build()
         {
             return new HttpListenerHost(_options);

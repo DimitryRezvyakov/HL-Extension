@@ -16,6 +16,11 @@ namespace CustomMVC.App.Hosting.Application
     public class WebApplication
     {
         /// <summary>
+        /// Service provider for injection
+        /// </summary>
+        public readonly ServiceCollection ServiceProvider = ServiceCollection.Instance;
+
+        /// <summary>
         /// Builder for a WebApplication
         /// </summary>
         public readonly WebApplicationBuilder WebAppBuilder;
@@ -53,7 +58,7 @@ namespace CustomMVC.App.Hosting.Application
         /// <summary>
         /// Running the application
         /// </summary>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentNullException">If application was not builded by WebApplicationBuilder</exception>
         public void Run()
         {
             ArgumentNullException.ThrowIfNull(WebAppBuilder);

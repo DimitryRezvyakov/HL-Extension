@@ -1,4 +1,6 @@
 ﻿using CustomMVC.App.Core.Http.HttpMethods.Abstractions;
+using CustomMVC.App.DependencyInjection;
+using CustomMVC.App.MVC.Controllers.Abstractions;
 using CustomMVC.App.MVC.Controllers.Routing;
 using System;
 using System.Collections.Generic;
@@ -12,30 +14,19 @@ namespace CustomMVC.App.MVC.Controllers.Common
     /// <summary>
     /// Provides all descriptor for all controllers actions
     /// </summary>
-    public class ActionDescriptorProvider
+    public class ActionDescriptorProvider : IActionDescriptorProvider
     {
-        private static readonly ControllersProvider _controllersProvider = ControllersProvider.Instance;
-        private static Dictionary<string, ActionDescriptor> _descriptors = new();
-        private static object lockObj = new();
-        private static ActionDescriptorProvider? _instance;
-        public static ActionDescriptorProvider Instance
-        {
-            get
-            {
-                lock (lockObj)
-                {
-                    if (_instance == null) _instance = new ActionDescriptorProvider();
-                    return _instance;
-                }
-            }
-        }
+        private static ServiceCollection _services = ServiceCollection.Instance;
+
+        private static readonly IControllersProvider _controllersProvider = _services.GetService<IControllersProvider>();
+        private Dictionary<string, ActionDescriptor> _descriptors { get; } = new();
 
         public ActionDescriptor GetDescriptor(string name)
         {
             return _descriptors[name];
         }
 
-        private ActionDescriptorProvider()
+        public ActionDescriptorProvider()
         {
             var controllers = _controllersProvider.GetControllersTypes();
 

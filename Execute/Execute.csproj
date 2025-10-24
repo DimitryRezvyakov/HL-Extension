@@ -11,4 +11,13 @@
     <ProjectReference Include="..\CustomMVC.App\CustomMVC.App.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Views\Home\IndexPost.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

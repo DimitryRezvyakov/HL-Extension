@@ -8,9 +8,19 @@ using System.Threading.Tasks;
 
 namespace CustomMVC.App.MVC.Controllers.Common.ModelBinding
 {
-    public class ModelBinderFactory
+    public class ModelBinderFactory : IModelBinderFactory
     {
-        public static ModelBinderConcrete Create(Type type)
+        /// <summary>
+        /// For DI and testing purpose only
+        /// </summary>
+        public ModelBinderFactory() { }
+
+        /// <summary>
+        /// Creates new concrete model binder
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public ModelBinderConcrete Create(Type type)
         {
             if (type.IsAssignableTo(typeof(ModelBinderConcrete)))
             {

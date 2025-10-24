@@ -2,6 +2,8 @@
 using CustomMVC.App.Core.Middleware;
 using CustomMVC.App.Core.Routing;
 using CustomMVC.App.Core.Routing.Common;
+using CustomMVC.App.DependencyInjection;
+using CustomMVC.App.MVC.Controllers.Abstractions;
 using CustomMVC.App.MVC.Controllers.Common;
 using System;
 using System.Collections.Generic;
@@ -17,15 +19,17 @@ namespace CustomMVC.App.MVC.Controllers.Routing
     /// </summary>
     public class ControllerRouteEnpointBuilder : EndpointBuilder
     {
+        private static readonly ServiceCollection _services = ServiceCollection.Instance;
+
         /// <summary>
         /// Provides the action descriptors
         /// </summary>
-        private readonly ActionDescriptorProvider actionDescriptorProvider = ActionDescriptorProvider.Instance;
+        private readonly IActionDescriptorProvider actionDescriptorProvider = _services.GetService<IActionDescriptorProvider>();
 
         /// <summary>
         /// Provides the Controllers
         /// </summary>
-        private readonly ControllersProvider controllersProvider = ControllersProvider.Instance;
+        private readonly IControllersProvider controllersProvider = _services.GetService<IControllersProvider>();
 
         /// <summary>
         /// Route name
@@ -50,7 +54,7 @@ namespace CustomMVC.App.MVC.Controllers.Routing
         /// <summary>
         /// For MVC handler is the chain of responsability
         /// </summary>
-        private RequestDelegate? _handler = MVCRequestDelegateFactory.Create;
+        private RequestDelegate _handler = MVCRequestDelegateFactory.Create;
 
         public ControllerRouteEnpointBuilder(string pattern, Defaults? defaults = null)
         {
@@ -107,7 +111,7 @@ namespace CustomMVC.App.MVC.Controllers.Routing
 
             EndpointMetadata.Add((IReadOnlyList<ActionDescriptor>)RouteDescriptors);
 
-            return new RouteEndpoint(routePattern, MVCRequestDelegateFactory.Create, 1, new RouteEndpointMetadata(EndpointMetadata));
+            return new RouteEndpoint(routePattern, _handler, 1, new RouteEndpointMetadata(EndpointMetadata));
         }
     }
 }

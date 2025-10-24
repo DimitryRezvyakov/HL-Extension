@@ -1,5 +1,6 @@
 ﻿using CustomMVC.App.Common.Exceptions;
 using CustomMVC.App.Core.Http;
+using CustomMVC.App.DependencyInjection;
 using CustomMVC.App.MVC.Controllers.Abstractions;
 using CustomMVC.App.MVC.Controllers.Common;
 using CustomMVC.App.MVC.Controllers.Common.ModelBinding;
@@ -11,12 +12,19 @@ using System.Threading.Tasks;
 
 namespace CustomMVC.App.MVC.Controllers.Routing
 {
-    public class ActionSelector
+    public class ActionSelector : IActionSelector
     {
+        private static readonly ServiceCollection _services = ServiceCollection.Instance;
+
         /// <summary>
         /// Model binder for selecting methods which binder can bind
         /// </summary>
-        private readonly ModelBinder _binder = new DefaultModelBinder();
+        private readonly IModelBinder _binder = _services.GetService<IModelBinder>();
+
+        /// <summary>
+        /// For DI and testing purpose only
+        /// </summary>
+        public ActionSelector() { }
 
         /// <summary>
         /// Selecting best candidate for endpoint, if no one throws RouteNotFoundException

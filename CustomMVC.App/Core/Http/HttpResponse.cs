@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CustomMVC.App.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -41,6 +42,9 @@ namespace CustomMVC.App.Core.Http
             }
 
             var buffer = System.Text.Encoding.UTF8.GetBytes(text);
+
+            this.SetContetnLength(buffer.LongLength);
+
             await _inner.OutputStream.WriteAsync(buffer, 0, buffer.Length);
         }
 
@@ -51,6 +55,8 @@ namespace CustomMVC.App.Core.Http
                 _hasStarted = true;
             }
 
+            this.SetContetnLength(bytes.LongLength);
+
             await _inner.OutputStream.WriteAsync(bytes, 0, bytes.Length);
         }
 
@@ -59,7 +65,7 @@ namespace CustomMVC.App.Core.Http
             _inner.ContentType = contentType;
         }
 
-        public void SetContetnLenth(long length)
+        public void SetContetnLength(long length)
         {
             _inner.ContentLength64 = length;
         }
@@ -76,6 +82,10 @@ namespace CustomMVC.App.Core.Http
 
         public void Close()
         {
+            var services = ServiceCollection.Instance;
+
+            services.ClearScope();
+
             _inner.Close();
         }
     }

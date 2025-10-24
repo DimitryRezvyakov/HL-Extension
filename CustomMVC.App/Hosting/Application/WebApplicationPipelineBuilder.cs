@@ -1,6 +1,7 @@
 ﻿using CustomMVC.App.Core.Http;
 using CustomMVC.App.Core.Middleware;
 using CustomMVC.App.Core.Routing;
+using CustomMVC.App.Hosting.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Xml.Schema;
 
 namespace CustomMVC.App.Hosting.Application
 {
-    public class WebApplicationPipelineBuilder
+    public class WebApplicationPipelineBuilder : IWebApplicationPipelineBuilder
     {
         /// <summary>
         /// Application middlewares lists
@@ -28,11 +29,16 @@ namespace CustomMVC.App.Hosting.Application
         };
 
         /// <summary>
+        /// For DI and testing purpose only
+        /// </summary>
+        public WebApplicationPipelineBuilder() { }
+
+        /// <summary>
         /// Adds new Use middleware to pipeline
         /// </summary>
         /// <param name="middleware">Middleware</param>
         /// <returns>WebApplicationPipeLineBuilder</returns>
-        public WebApplicationPipelineBuilder Use(Func<HttpContext, Func<Task>, Task> middleware)
+        public IWebApplicationPipelineBuilder Use(Func<HttpContext, Func<Task>, Task> middleware)
         {
             _middlewares.Add(next => async ctx =>
             {
@@ -47,7 +53,7 @@ namespace CustomMVC.App.Hosting.Application
         /// </summary>
         /// <param name="terminalMidleware">Middleware</param>
         /// <returns>WebApplicationPipeLineBuilder</returns>
-        public WebApplicationPipelineBuilder Run(Func<HttpContext, Task> terminalMidleware)
+        public IWebApplicationPipelineBuilder Run(Func<HttpContext, Task> terminalMidleware)
         {
             _middlewares.Add(next => async ctx => await terminalMidleware(ctx));
 

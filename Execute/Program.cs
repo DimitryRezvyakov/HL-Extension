@@ -1,13 +1,17 @@
-﻿using CustomMVC.App.Hosting.Application;
+﻿using CustomMVC.App.Common;
+using CustomMVC.App.Core.Middleware.Extensions;
+using CustomMVC.App.Hosting.Application;
 using CustomMVC.App.MVC.Extensions;
 
 var builder = WebApplication.CreateBuilder();
 builder.Host.Configure(opt =>
 {
-    opt.ConnectionString = "http://localhost:8888/";
+    opt.ConnectionString = $"http://localhost:8888/";
 });
 
 var app = builder.Build();
+
+app.UseStaticFiles();
 
 app.UseControllersWithViews();
 

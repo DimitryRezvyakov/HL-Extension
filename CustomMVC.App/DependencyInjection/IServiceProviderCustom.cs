@@ -8,8 +8,12 @@ namespace CustomMVC.App.DependencyInjection
 {
     public interface IServiceProviderCustom
     {
-        IServiceCollection Services { get; }
+        public static ServiceCollection Services { get; }
 
         public T GetService<T>();
+
+        public void AddTransient<TInterface, TImplimentation>() where TImplimentation : class, TInterface;
+        public void AddScoped<TInterface, TImplimentation>() where TImplimentation : class, TInterface;
+        public void AddSingleton<TInterface, TImplimentation>() where TImplimentation : class, TInterface;
     }
 }

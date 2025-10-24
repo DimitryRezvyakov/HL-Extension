@@ -1,7 +1,12 @@
-﻿using CustomMVC.App.Core.Http;
+﻿using CustomMVC.App.Common;
+using CustomMVC.App.Common.Abstractions;
+using CustomMVC.App.Core.Http;
 using CustomMVC.App.Core.Middleware;
+using CustomMVC.App.DependencyInjection;
+using CustomMVC.App.MVC.Controllers.Abstractions;
 using CustomMVC.App.MVC.Controllers.Common.Entities;
 using CustomMVC.App.MVC.Controllers.Common.ModelBinding;
+using CustomMVC.App.MVC.Controllers.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +18,21 @@ namespace CustomMVC.App.MVC.Controllers.Routing
     /// <summary>
     /// Creates a action invoker which will handle the endpoint
     /// </summary>
-    public class ActionInvokerFactory
+    public class ActionInvokerFactory : IActionInvokerFactory
     {
+        private static readonly ServiceCollection _services = ServiceCollection.Instance;
+
+        private static readonly Logger<ActionInvokerFactory> _logger = new();
+
         /// <summary>
         /// Model binder to bind action parameters
         /// </summary>
-        private readonly DefaultModelBinder _binder = new();
+        private readonly IModelBinder _binder = _services.GetService<IModelBinder>();
+
+        /// <summary>
+        /// For DI and testing purpose only
+        /// </summary>
+        public ActionInvokerFactory() { }
 
         /// <summary>
         /// Creates a RequestDelegate that will handle an endpoint
@@ -31,18 +45,46 @@ namespace CustomMVC.App.MVC.Controllers.Routing
             //binding a action parameters from request data
             var model = _binder.Bind(context, descriptor);
 
+            //Conext for the action
+            ActionContext actionContext = new()
+            {
+                ModelState = model,
+                ControllerType = descriptor.ControllerTypeInfo,
+                ActionDescriptor = descriptor,
+                Context = context,
+            };
+
             //creating a controller instance
             var controller = Activator.CreateInstance(descriptor.ControllerTypeInfo) as ControllerBase;
 
-            ArgumentNullException.ThrowIfNull(controller);
+            ArgumentNullException.ThrowIfNull(controller, $"Controller {descriptor.ControllerTypeInfo} was not defined");
 
             controller.Context = context;
             controller.ModelState = model;
 
             return async (context) => 
             {
-                descriptor.MethodInfo.Invoke(controller, model.Parameters);
-                await Task.CompletedTask;
+                _logger.LogDebug($"Executing action {actionContext}");
+
+                var result = descriptor.MethodInfo.Invoke(controller, model.Parameters);
+                
+                if (result is IActionResult executer)
+                {
+                    try
+                    {
+                        _logger.LogDebug($"Executing action result of action {actionContext}");
+
+                        await executer.ExecuteResultAsync(actionContext);
+
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex);
+                    }
+                }
+
+                _logger.LogWarning($"The action {actionContext} doesn`t return any IActionResult");
             };
         }
     }

@@ -14,6 +14,7 @@ namespace CustomMVC.App.Hosting.Application
 {
     public class WebApplicationBuilder
     {
+        private static readonly ServiceProvider? Services = ServiceProvider.GetInstance();
         /// <summary>
         /// A web application instance
         /// </summary>
@@ -22,21 +23,21 @@ namespace CustomMVC.App.Hosting.Application
         /// <summary>
         /// A host builder
         /// </summary>
-        private HostBuilder hostOptionsBuilder = new HostBuilder();
+        private IHostBuilder hostOptionsBuilder = Services.GetService<IHostBuilder>();
 
         /// <summary>
         /// A web application pipeline builder
         /// </summary>
-        private readonly WebApplicationPipelineBuilder pipelineBuilder = new();
+        private readonly IWebApplicationPipelineBuilder pipelineBuilder = Services.GetService<IWebApplicationPipelineBuilder>();
 
         /// <summary>
         /// A web application endpoint data sources
         /// </summary>
         private List<EndpointDataSource> _endpointDataSources = new List<EndpointDataSource>() { DefaultEndpointDataSource.Instance };
 
-        public HostBuilder Host => hostOptionsBuilder;
+        public IHostBuilder Host => hostOptionsBuilder;
         public List<EndpointDataSource> Sources => _endpointDataSources;
-        public WebApplicationPipelineBuilder PipeLine => pipelineBuilder;
+        public IWebApplicationPipelineBuilder PipeLine => pipelineBuilder;
 
         /// <summary>
         /// Builds a WebApplication
