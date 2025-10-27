@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Mediator.Interfaces;
 using System.Reflection;
 
 namespace Mediator.Providers
@@ -17,7 +16,19 @@ namespace Mediator.Providers
         {
             var hasHandler = _handlers.TryGetValue(type, out var handler);
 
-            return hasHandler ? handler : null;
+            if (hasHandler)
+            {
+                try
+                {
+                    var handlerInstance = Activator.CreateInstance(handler!);
+                    return handlerInstance;
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+            return null;
         }
 
         public NotificationHandlerProvider(Assembly[] assemblies)
@@ -25,18 +36,23 @@ namespace Mediator.Providers
             foreach (Assembly assembly in assemblies)
             {
                 var notifications = assembly.GetTypes()
-                    .Where(t => t is INotification)
+                    .Where(t => t.GetInterfaces().Contains(typeof(INotification)))
                     .ToList();
 
                 var notificationHandlers = assembly.GetTypes()
-                    .Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(INotificationHandler<>))
+                    .Where(
+                    t => !t.IsAbstract &&
+                    t.GetInterfaces()
+                        .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)
+                        )
+                    )
                     .ToList();
 
                 foreach (var notification in notifications)
                 {
                     var handler = notificationHandlers
-                        .Where(t => t.GetGenericArguments()[0] == notification)
-                        .FirstOrDefault();
+                        .FirstOrDefault(h => h.GetInterfaces()
+                        .Any(i => i.GetGenericArguments()[0] == notification));
 
                     if (handler == null) return;
 

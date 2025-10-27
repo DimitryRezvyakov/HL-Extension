@@ -37,15 +37,17 @@ namespace Mediator.Providers
             foreach (Assembly assembly in assemblies)
             {
                 var requests = assembly.GetTypes()
-                    .Where(t => t.IsGenericType && 
-                    (t.GetGenericTypeDefinition() == typeof(IRequest<>) ||
-                    t.GetGenericTypeDefinition() ==  typeof(IRequest)))
+                    .Where(t => t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequest<>)) ||
+                    t.IsAssignableTo(typeof(IRequest)))
                     .ToList();
 
                 var handlers = assembly.GetTypes()
-                    .Where(t => t.IsGenericType &&
-                    (t.GetGenericTypeDefinition() == typeof(IRequestHandler<,>) ||
-                    t.GetGenericTypeDefinition() == typeof(IRequestHandler<>)))
+                    .Where(t => !t.IsAbstract && 
+                    t.GetInterfaces()
+                    .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequestHandler<>) ||
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequestHandler<,>)
+                        )
+                    )
                     .ToList();
 
                 foreach (var requset in requests)

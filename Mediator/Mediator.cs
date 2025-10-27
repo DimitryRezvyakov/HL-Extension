@@ -12,9 +12,9 @@ namespace Mediator
 {
     public class Mediator : IMediator
     {
-        private static MediatorOptions _options { get; set; } = new();
-        private static readonly RequestHandlerProvider _handlerProvider = new(_options.Assemblies);
-        private static readonly NotificationHandlerProvider _notificationHandlerProvider = new(_options.Assemblies);
+        private MediatorOptions _options { get; set; }
+        private readonly RequestHandlerProvider _handlerProvider = null!;
+        private readonly NotificationHandlerProvider _notificationHandlerProvider = null!;
 
         public Mediator() { }
 
@@ -25,17 +25,21 @@ namespace Mediator
             if (opt != null) opt(options);
 
             _options = options;
+
+            _handlerProvider = new RequestHandlerProvider(options.Assemblies);
+
+            _notificationHandlerProvider = new NotificationHandlerProvider(options.Assemblies);
         }
 
         public async Task Publish(INotification notification, CancellationToken ct)
         {
-            var handlerType = _notificationHandlerProvider.Get(notification.GetType());
+            var handler = _notificationHandlerProvider.Get(notification.GetType());
 
-            if (handlerType != null)
+            if (handler != null)
             {
-                var handlermethod = handlerType.GetType().GetMethod("Handle");
+                var handlermethod = handler.GetType().GetMethod("Handle");
 
-                await (Task)handlermethod?.Invoke(handlerType, new object[] { notification, ct })!;
+                await (Task)handlermethod?.Invoke(handler, new object[] { notification, ct })!;
             }
 
             else
@@ -48,13 +52,13 @@ namespace Mediator
 
         public async Task Send(IRequest request, CancellationToken ct)
         {
-            var handlerType = _handlerProvider.Get(request.GetType());
+            var handler = _handlerProvider.Get(request.GetType());
 
-            if (handlerType != null)
+            if (handler != null)
             {
-                var handlermethod = handlerType.GetType().GetMethod("Handle");
+                var handlermethod = handler.GetType().GetMethod("Handle");
 
-                await (Task)handlermethod?.Invoke(handlerType, new object[] { request, ct })!;
+                await (Task)handlermethod?.Invoke(handler, new object[] { request, ct })!;
             }
 
             else
