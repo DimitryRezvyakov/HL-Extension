@@ -18,7 +18,7 @@ namespace CustomMVC.App.Hosting.Application
         /// <summary>
         /// Service provider for injection
         /// </summary>
-        public readonly ServiceCollection ServiceProvider = ServiceCollection.Instance;
+        private readonly ServiceCollection ServiceProvider = ServiceCollection.Instance;
 
         /// <summary>
         /// Builder for a WebApplication

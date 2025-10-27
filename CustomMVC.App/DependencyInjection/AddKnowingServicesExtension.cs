@@ -1,4 +1,6 @@
-﻿using CustomMVC.App.Hosting.Abstractions;
+﻿using CustomMVC.App.Common;
+using CustomMVC.App.Common.Abstractions;
+using CustomMVC.App.Hosting.Abstractions;
 using CustomMVC.App.Hosting.Application;
 using CustomMVC.App.Hosting.Host;
 using CustomMVC.App.MVC.Controllers.Abstractions;
@@ -11,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Shared.Interfaces;
 namespace CustomMVC.App.DependencyInjection
 {
     public static class AddKnowingServicesExtension
@@ -19,6 +21,8 @@ namespace CustomMVC.App.DependencyInjection
         public static void AddKnowingServices(this IServiceProviderCustom serviceProvider)
         {
             // Singleton
+            serviceProvider.AddSingleton<IConfiguration, Configuration>();
+
             serviceProvider.AddSingleton<IWebApplicationPipelineBuilder, WebApplicationPipelineBuilder>();
 
             serviceProvider.AddSingleton<IHostBuilder, HostBuilder>();

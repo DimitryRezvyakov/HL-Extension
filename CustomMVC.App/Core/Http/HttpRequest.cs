@@ -13,22 +13,22 @@ namespace CustomMVC.App.Core.Http
     {
         private readonly HttpListenerRequest _inner;
         public virtual Uri? Uri => _inner.Url;
-        public string? ContentType => _inner.ContentType;
-        public long ContentLength => _inner.ContentLength64;
-        public Uri? UriReferer => _inner.UrlReferrer;
-        public string Method => _inner.HttpMethod;
-        public Stream Body => _inner.InputStream;
-        public NameValueCollection Headers => _inner.Headers;
-        public NameValueCollection QueryString => _inner.QueryString;
-        public string[]? Language => _inner.UserLanguages;
+        public virtual string? ContentType => _inner.ContentType;
+        public virtual long ContentLength => _inner.ContentLength64;
+        public virtual Uri? UriReferer => _inner.UrlReferrer;
+        public virtual string Method => _inner.HttpMethod;
+        public virtual Stream Body => _inner.InputStream;
+        public virtual NameValueCollection Headers => _inner.Headers;
+        public virtual NameValueCollection QueryString => _inner.QueryString;
+        public virtual string[]? Language => _inner.UserLanguages;
         public HttpRequest(HttpListenerRequest inner)
         {
             _inner = inner;
         }
 
-        public HttpRequest()
-        {
-
-        }
+        /// <summary>
+        /// Only for test purpose
+        /// </summary>
+        public HttpRequest() { }
     }
 }

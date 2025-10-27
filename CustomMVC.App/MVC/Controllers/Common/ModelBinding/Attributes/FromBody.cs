@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace CustomMVC.App.MVC.Controllers.Common.ModelBinding.Attributes
 {
+    /// <summary>
+    /// Only for methadata, sets binding from body
+    /// </summary>
     public class FromBody : ModelBindAttribute
     {
         public FromBody() : base(typeof(FromBodyBinder)) { }

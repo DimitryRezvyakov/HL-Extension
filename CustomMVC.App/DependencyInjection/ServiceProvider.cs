@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Shared.Interfaces;
 namespace CustomMVC.App.DependencyInjection
 {
-    public class ServiceProvider : IServiceProviderCustom
+    public class ServiceProvider : Shared.Interfaces.IServiceProviderCustom
     {
         public static ServiceCollection Services { get; } = new();
 
@@ -33,39 +33,33 @@ namespace CustomMVC.App.DependencyInjection
             Services.ClearScope();
         }
 
-        public void AddScoped<TInterface, TImplimentation>() where TImplimentation : class, TInterface
+        public void AddScoped<TInterface, TImplimentation>(object[]? parameters = null) where TImplimentation : class, TInterface
         {
-            var implimentation = Activator.CreateInstance(typeof(TImplimentation));
+            Services.Scoped.Add(typeof(TInterface), typeof(TImplimentation));
 
-            if (implimentation == null)
-                throw new NotSupportedException($"Can not create instance of {typeof(TImplimentation)}");
-
-            Services.Scoped.Add(typeof(TInterface), implimentation);
+            if (parameters != null)
+                Services.SettedParameters.Add(typeof(TImplimentation), parameters);
         }
 
-        public void AddSingleton<TInterface, TImplimentation>() where TImplimentation : class, TInterface
+        public void AddSingleton<TInterface, TImplimentation>(object[]? parameters = null) where TImplimentation : class, TInterface
         {
-            var implimentation = Activator.CreateInstance(typeof(TImplimentation));
+            Services.Singleton.Add(typeof(TInterface), typeof(TImplimentation));
 
-            if (implimentation == null)
-                throw new NotSupportedException($"Can not create instance of {typeof(TImplimentation)}");
-
-            Services.Singleton.Add(typeof(TInterface), implimentation);
+            if (parameters != null)
+                Services.SettedParameters.Add(typeof(TImplimentation), parameters);
         }
 
-        public void AddTransient<TInterface, TImplimentation>() where TImplimentation : class, TInterface
+        public void AddTransient<TInterface, TImplimentation>(object[]? parameters = null) where TImplimentation : class, TInterface
         {
-            var implimentation = Activator.CreateInstance(typeof(TImplimentation));
+            Services.Transient.Add(typeof(TInterface), typeof(TImplimentation));
 
-            if (implimentation == null)
-                throw new NotSupportedException($"Can not create instance of {typeof(TImplimentation)}");
-
-            Services.Transient.Add(typeof(TInterface), implimentation);
+            if (parameters != null)
+                Services.SettedParameters.Add(typeof(TImplimentation), parameters);
         }
 
-        public T GetService<T>()
+        public T GetService<T>(object[]? parameters = null)
         {
-            return Services.GetService<T>();
+            return Services.GetService<T>(parameters);
         }
     }
 }

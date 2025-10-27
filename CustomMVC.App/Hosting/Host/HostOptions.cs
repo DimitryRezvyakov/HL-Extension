@@ -1,4 +1,6 @@
-﻿using CustomMVC.App.Hosting.Abstractions;
+﻿using CustomMVC.App.Common.Abstractions;
+using CustomMVC.App.DependencyInjection;
+using CustomMVC.App.Hosting.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,33 @@ namespace CustomMVC.App.Hosting.Host
 
     public class HostOptions
     {
+        private readonly ServiceCollection _services = ServiceCollection.Instance;
+
+        /// <summary>
+        /// Trying to set settings from settings.json file
+        /// </summary>
+        public HostOptions()
+        {
+            try
+            {
+                var config = _services.GetService<IConfiguration>();
+
+                var domain = config.Get("Host", "Domain") as string;
+                var protocol = config.Get("Host", "Protocol") as string;
+                var port = config.Get("Host", "Port") as string;
+
+                var connectionString = $"{protocol}://{domain}:{port}/";
+
+                Domain = domain!;
+                Port = port!;
+                ConnectionString = connectionString;
+            }
+            catch
+            {
+
+            }
+        }
+
         /// <summary>
         /// Host domain
         /// </summary>

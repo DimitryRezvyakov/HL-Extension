@@ -3,6 +3,7 @@ using CustomMVC.App.MVC.Controllers.Common.ModelBinding.Binders;
 using CustomMVC.App.MVC.Controllers.Routing;
 using Moq;
 using System.Collections.Specialized;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography.X509Certificates;
 using Xunit;
 
@@ -12,6 +13,16 @@ public class QueryBinderTests
     {
         public string Name { get; set; }
         public int Password { get; set; }
+    }
+
+    public class MockedUri : Uri
+    {
+        public MockedUri([StringSyntax("Uri")] string uriString) : base(uriString)
+        {
+            
+        }
+
+        public new string Query {  get; set; }
     }
 
     [Fact]
@@ -24,7 +35,10 @@ public class QueryBinderTests
 
         var requestMock = new Mock<HttpRequest>();
         requestMock.SetupGet(r => r.Uri)
-                   .Returns(new Uri("http://localhost/?Name=Dima&Password=1234"));
+                   .Returns(new MockedUri("http://localhost:8888/"));
+
+        requestMock.SetupGet(r => r.Uri.Query)
+            .Returns("?Name=Dima&Passwordd=1234");
 
         var contextMock = new Mock<HttpContext>(null, null);
         contextMock.SetupGet(c => c.Request).Returns(requestMock.Object);
@@ -33,7 +47,7 @@ public class QueryBinderTests
 
         var result = binder.Bind(contextMock.Object, parameterDescriptor.Object);
 
-        Assert.Equal("Dima", result);
+        Assert.Equal("Dima", result?.ToString());
     }
 
     [Fact]

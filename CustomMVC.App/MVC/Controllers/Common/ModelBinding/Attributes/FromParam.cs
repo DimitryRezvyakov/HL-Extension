@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace CustomMVC.App.MVC.Controllers.Common.ModelBinding.Attributes
 {
+    /// <summary>
+    /// Only for methdata, sets binding from parameters
+    /// </summary>
     public class FromParam : ModelBindAttribute
     {
         public FromParam() : base(typeof(FromParamBinder)) { }

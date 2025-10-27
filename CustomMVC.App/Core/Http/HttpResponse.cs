@@ -13,26 +13,25 @@ namespace CustomMVC.App.Core.Http
     {
         private readonly HttpListenerResponse _inner;
         private bool _hasStarted = false;
-        public bool HasStarted => _hasStarted;
-        public Encoding? ContentEncoding => _inner.ContentEncoding;
-        public string? ContentType => _inner.ContentType;
-        public long ContentLength => _inner.ContentLength64;
-        public CookieCollection Cookies => _inner.Cookies;
-        public NameValueCollection Headers => _inner.Headers;
-        public bool KeepAlive => _inner.KeepAlive;
-        public Stream OutputStream => _inner.OutputStream;
-
-        public int StatusCode => _inner.StatusCode;
+        public virtual bool HasStarted => _hasStarted;
+        public virtual Encoding? ContentEncoding => _inner.ContentEncoding;
+        public virtual string? ContentType => _inner.ContentType;
+        public virtual long ContentLength => _inner.ContentLength64;
+        public virtual CookieCollection Cookies => _inner.Cookies;
+        public virtual NameValueCollection Headers => _inner.Headers;
+        public virtual bool KeepAlive => _inner.KeepAlive;
+        public virtual Stream OutputStream => _inner.OutputStream;
+        public virtual int StatusCode => _inner.StatusCode;
 
         public HttpResponse(HttpListenerResponse inner)
         {
             _inner = inner;
         }
 
-        public HttpResponse()
-        {
-
-        }
+        /// <summary>
+        /// For testing purpose only
+        /// </summary>
+        public HttpResponse() { }
 
         public async Task WriteAsync(string text)
         {

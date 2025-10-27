@@ -9,6 +9,7 @@ namespace CustomMVC.App.Common.Abstractions
 {
     public interface IConfiguration
     {
-        
+        public object? Get(params string[] keys);
+        public T? Get<T>(params string[] keys);
     }
 }

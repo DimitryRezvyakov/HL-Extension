@@ -9,6 +9,7 @@ namespace CustomMVC.App.MVC.Controllers.Abstractions
     /// <summary>
     /// Abstract class for parameter model binding
     /// </summary>
+    [AttributeUsage(AttributeTargets.Parameter)]
     public abstract class ModelBindAttribute : Attribute, IModelBindType
     {
         public Type ModelBinderType { get; set; }

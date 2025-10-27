@@ -12,12 +12,11 @@ namespace CustomMVC.App.Common
     public class Configuration : IConfiguration
     {
         private readonly Dictionary<string, object> _settings = new();
-        private static Configuration? Instance;
-
-        public Configuration(string fileName = "settings.json")
+        private string _settingsFilePath = "settings.json";
+        public Configuration()
         {
             var basePath = GetEntryAssemblyDirectory();
-            var filePath = Path.Combine(basePath, fileName);
+            var filePath = Path.Combine(basePath, _settingsFilePath);
 
             if (!File.Exists(filePath))
                 throw new FileNotFoundException($"Файл настроек '{filePath}' не найден.");
@@ -27,6 +26,11 @@ namespace CustomMVC.App.Common
             _settings = ParseElement(document.RootElement);
         }
 
+        public void SetSettingsFilePath(string path)
+        {
+            _settingsFilePath = path;
+        }
+
         private static string GetEntryAssemblyDirectory()
         {
             var entryAssembly = Assembly.GetEntryAssembly();
@@ -34,13 +38,6 @@ namespace CustomMVC.App.Common
                 return AppContext.BaseDirectory;
 
             return Path.GetDirectoryName(entryAssembly.Location)!;
-        }
-
-        public static Configuration GetInstance()
-        {
-            if (Instance == null) Instance = new Configuration();
-
-            return Instance;
         }
 
         private static Dictionary<string, object> ParseElement(JsonElement element)

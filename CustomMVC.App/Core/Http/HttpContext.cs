@@ -9,12 +9,16 @@ namespace CustomMVC.App.Core.Http
 {
     public class HttpContext
     {
+        /// <summary>
+        /// Virtual only for test purpose
+        /// </summary>
+ 
         public virtual HttpRequest Request { get; set; }
-        public HttpResponse Response { get; }
-        public RouteEndpoint Endpoint { get; set; }
-        public IServiceProvider RequestServices { get; set; }
-        public Dictionary<string, string> RouteParametrs { get; set; }
-        public Dictionary<object, object> Items { get; } = new Dictionary<object, object>();
+        public virtual HttpResponse Response { get; }
+        public virtual RouteEndpoint Endpoint { get; set; }
+        public virtual IServiceProvider RequestServices { get; set; }
+        public virtual Dictionary<string, string> RouteParametrs { get; set; }
+        public virtual Dictionary<object, object> Items { get; } = new Dictionary<object, object>();
 
         public HttpContext(HttpRequest request, HttpResponse response) 
         {
@@ -22,6 +26,9 @@ namespace CustomMVC.App.Core.Http
             Response = response;
         }
 
+        /// <summary>
+        /// For test purpose only
+        /// </summary>
         public HttpContext()
         {
 

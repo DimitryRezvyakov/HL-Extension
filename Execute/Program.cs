@@ -1,15 +1,25 @@
 ﻿using CustomMVC.App.Common;
+using CustomMVC.App.Common.Abstractions;
 using CustomMVC.App.Core.Middleware.Extensions;
 using CustomMVC.App.Hosting.Application;
+using CustomMVC.App.Hosting.Host;
 using CustomMVC.App.MVC.Extensions;
+using Mediator.Extensions;
+using Mediator.Interfaces;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder();
-builder.Host.Configure(opt =>
+
+builder.Services.UseMediator(opt =>
 {
-    opt.ConnectionString = $"http://localhost:8888/";
+    opt.Assemblies = new[] { Assembly.GetExecutingAssembly() };
 });
 
+builder.Services.GetService<IMediator>();
+
 var app = builder.Build();
+
+app.UseDefaultExceptionHandler();
 
 app.UseStaticFiles();
 
